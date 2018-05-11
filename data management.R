@@ -75,4 +75,202 @@ Afghan$gdp<-Afghan$pop*Afghan$gdpPercap
 #now create a new folder called results and write the new data file
 write.csv(x = Afghan, file = "results/Afghan_data.csv")
 
+# Conditional Statements
 
+# Curly braces set code apart: the code inside the curly braces won't always run. { and } are curly braces.
+
+# We're starting with an if-else statement
+
+
+number <- 37
+
+if (number > 100) {               # if condition is true
+  
+  print("greater than 100")    # perform this function
+  
+} else {                                 # if condition is false
+  
+  print("less than 100")         # perform alternative action
+  
+}
+
+print("finished checking")
+
+
+This will have R evaluate the following conditional statement. Since we assigned the object number as 37, it will print the else portion "less than 100." If we were assign number as 101, then it would print "greater than 100"
+
+You can visualize this as a choice diagram
+
+Different comparison operators:
+  
+  > greater than
+
+< less than
+
+== equal to (a single = is an assignment operator.  *The nitty gritty is that = assigns in both directions while <- assigns in one)
+
+!= not equal to
+
+>= greater or equal to 
+
+<= less or equal to
+
+For a detailed list with more operators, see: http://adv-r.had.co.nz/Vocabulary.html
+
+# We don't necessarily need an "else" statement
+# 
+# 
+# number <- 150
+# 
+# if (number > 100) {                # if condition is true
+# 
+# print("greater than 100")   # peform this function
+
+}
+
+
+More than 1 test in a conditional statement
+
+
+number <- -3
+
+if (number > 0) {
+
+print(1)
+
+} else if (number < 0) {
+
+print(-1)
+
+} else {
+
+print(0)
+
+}
+
+
+#Combining tests
+
+
+# 'and'
+number1 <- 15
+number2 <- 40
+
+if (number1 >= 0 & number2 >= 0) {
+
+print("both numbers are positive")
+
+} else {
+
+print("at least one is negative")
+
+}
+
+
+# 'or'
+
+number1 <- -15
+
+number1 <- -40
+
+
+if (number1 >= 0 | number2 >= 0) {
+
+print("at least one number is positive")
+
+} else {
+
+print("both numbers are negative")
+
+}
+
+# Creating and using functions
+
+fahr_to_kelvin<-function(temp) {
+kelvin<- ((temp -32) * (5/9)) + 273.15
+return(kelvin) #return is optional but good to keep in
+}
+
+fahr_to_kelvin(32) #freezing pint
+fahr_to_kelvin(212) #boiling point
+
+kelvin_to_celsius(0)
+
+
+#mixing and matching
+
+fahr_to_celsius<-function(temp){
+  temp_k <- fahr_to_kelvin(temp)
+  temp_c <- kelvin_to_celsius(temp_k)
+  return(temp_c)
+}
+
+#can also nest
+
+celsius_to_fahr<-function(temp){
+  celsius<- ((temp) * (9/5) +32) 
+  return(celsius) 
+} 
+celsius_to_fahr(0)
+celsius_to_fahr(20)
+
+#________________________________________________
+#making a reproducible graphic
+#_______________________________________________
+library(ggplot2)
+
+head(gap)
+
+plot(x=gap$gdpPercap, y=gap$lifeExp)
+#ggtree, similar languague to ggplot Hadley Wickham
+
+#ggplot image
+ 
+ggplot(data=gap, aes(x=gdpPercap, y=lifeExp)) #aes specifies which variables to focus on
+
+ggplot(data=gap, aes(x=gdpPercap, y=lifeExp))+  #add a layer with +
+  +   geom_point()  #specify plot type
+
+ggplot(data=gap, aes(x=year, y=lifeExp)) +
+  geom_point()  
+
+head(gap)
+
+#include country information (lines are country); the order of the graphic depends on the order of the 
+ggplot(data=gap, aes (x=year, y=lifeExp, by = country, color = continent
+                      ))+
+  geom_line() +
+  geom_point()
+
+#to make black points first line is global, but can add aes to each type
+ggplot(data=gap, aes (x=year, y=lifeExp, by = country))+ 
+  geom_line(aes(color = continent))+
+  geom_point(color = "blue")
+
+#changes transparency of points
+ggplot(data=gap, aes(x=gdpPercap, y=lifeExp)) +
+  scale_x_log10()+
+  geom_point(alpha=0.5)+
+  geom_smooth(method = lm, color = "red", size = 2)
+
+#to make pub ready
+ggplot(data=gap, aes(x=gdpPercap, y=lifeExp)) +
+  scale_x_log10()+
+  geom_point(alpha=0.5)+
+  geom_smooth(method = lm, color = "red")+
+  theme_bw()+
+  ggtitle("Effects of Per Capita GDP on Life Expectancy")+
+  xlab("GDP per capita ($)")+
+  ylab("Life Expectancy (Years)")
+
+ggsave(file = "results/lefe expectancy.png")  #??ggsave has a lot of choices, including 600 dpi
+ 
+#faceting
+ggplot(dat = gap,aes(x = gdpPercap, y = lifeExp, color = continent))+
+  geom_point()+
+  scale_x_log10()+
+  geom_smooth(method = "lm")+
+  facet_wrap(~year)
+
+ggsave(file = "results/last plot.png")
+  
